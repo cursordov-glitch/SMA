@@ -1,6 +1,7 @@
 import { TopNav } from "@/components/layout/TopNav";
 import { BottomNav } from "@/components/layout/BottomNav";
 import { SideNav } from "@/components/layout/SideNav";
+import { cn } from "@/lib/utils";
 
 export default function RootGroupLayout({
   children,
@@ -8,14 +9,26 @@ export default function RootGroupLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="relative min-h-screen flex flex-col">
+    <div className="relative min-h-screen bg-background">
       <TopNav />
-      <div className="flex flex-1 pt-[60px]">
+
+      <div className="flex min-h-screen pt-[60px]">
+        {/* Desktop sidebar — 72px collapsed, 240px expanded at xl */}
         <SideNav />
-        <main className="flex-1 md:ml-[72px] lg:ml-[240px] pb-[64px] md:pb-0 min-h-[calc(100vh-60px)]">
+
+        {/* Main scrollable content */}
+        <main
+          className={cn(
+            "flex-1 min-w-0",
+            "lg:ml-[72px] xl:ml-[240px]",
+            "pb-16 lg:pb-0"
+          )}
+        >
           {children}
         </main>
       </div>
+
+      {/* Mobile bottom nav */}
       <BottomNav />
     </div>
   );
