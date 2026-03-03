@@ -7,42 +7,40 @@ import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 export function ThemeToggle() {
-  const { theme, setTheme } = useTheme();
+  const { resolvedTheme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  useEffect(() => setMounted(true), []);
 
   if (!mounted) {
-    return (
-      <div className="w-9 h-9 rounded-xl bg-surface animate-pulse" />
-    );
+    return <div className="w-9 h-9 rounded-xl bg-surface" />;
   }
 
-  const isDark = theme === "dark";
+  const isDark = resolvedTheme === "dark";
 
   return (
-    <button
+    <motion.button
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.9 }}
       onClick={() => setTheme(isDark ? "light" : "dark")}
       aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
       className={cn(
         "relative w-9 h-9 flex items-center justify-center rounded-xl",
         "text-muted-foreground hover:text-foreground hover:bg-surface-hover",
-        "transition-all duration-200 active:scale-95"
+        "transition-colors duration-150"
       )}
     >
       <AnimatePresence mode="wait" initial={false}>
         <motion.div
           key={isDark ? "dark" : "light"}
-          initial={{ opacity: 0, rotate: -90, scale: 0.8 }}
+          initial={{ opacity: 0, rotate: -90, scale: 0.7 }}
           animate={{ opacity: 1, rotate: 0, scale: 1 }}
-          exit={{ opacity: 0, rotate: 90, scale: 0.8 }}
-          transition={{ duration: 0.2, ease: "easeOut" }}
+          exit={{ opacity: 0, rotate: 90, scale: 0.7 }}
+          transition={{ duration: 0.18, ease: "easeOut" }}
         >
           {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
         </motion.div>
       </AnimatePresence>
-    </button>
+    </motion.button>
   );
 }
