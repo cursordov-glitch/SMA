@@ -2,54 +2,47 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  Home,
-  Video,
-  Plus,
-  MessageCircle,
-  User,
-  Compass,
-  Zap,
-} from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
-
-const NAV_ITEMS = [
-  { href: "/home", icon: Home, label: "Home" },
-  { href: "/explore", icon: Compass, label: "Explore" },
-  { href: "/videos", icon: Video, label: "Videos" },
-  { href: "/create", icon: Plus, label: "Create", isCreate: true },
-  { href: "/chat", icon: MessageCircle, label: "Chat" },
-  { href: "/profile", icon: User, label: "Profile" },
-] as const;
+import { SIDE_NAV_ITEMS, isActiveRoute } from "@/lib/navigation";
+import { Logo } from "@/components/common/Logo";
 
 export function SideNav() {
   const pathname = usePathname();
 
   return (
-    <aside className="hidden md:flex fixed left-0 top-[60px] bottom-0 z-40 flex-col items-center border-r border-border/50 bg-background/80 backdrop-blur-xl transition-all duration-300 w-[72px] lg:w-[240px]">
-      <nav className="flex flex-col gap-1 p-3 w-full flex-1 pt-4">
-        {NAV_ITEMS.map((item) => {
-          const isActive =
-            pathname === item.href || pathname.startsWith(item.href + "/");
+    <aside
+      className={cn(
+        "hidden lg:flex",
+        "fixed left-0 top-[60px] bottom-0 z-40",
+        "flex-col",
+        "border-r border-border/50",
+        "bg-background/80 backdrop-blur-xl",
+        "w-[72px] xl:w-[240px]",
+        "transition-[width] duration-300 ease-in-out"
+      )}
+    >
+      <nav className="flex flex-col gap-1 p-3 flex-1 pt-4 overflow-y-auto">
+        {SIDE_NAV_ITEMS.map((item) => {
+          const active = isActiveRoute(pathname, item.href);
 
           if (item.isCreate) {
             return (
               <Link key={item.href} href={item.href}>
                 <motion.div
-                  whileHover={{ scale: 1.02 }}
+                  whileHover={{ scale: 1.02, opacity: 0.92 }}
                   whileTap={{ scale: 0.97 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 28 }}
                   className={cn(
-                    "flex items-center gap-3 rounded-2xl p-3 my-1",
-                    "bg-gradient-brand text-white shadow-glow",
-                    "transition-shadow duration-200 hover:shadow-glow",
-                    "justify-center lg:justify-start"
+                    "flex items-center gap-3 rounded-2xl px-3 py-3 my-0.5",
+                    "bg-gradient-to-r from-brand-500 via-violet-500 to-pink-500",
+                    "text-white font-semibold text-sm",
+                    "justify-center xl:justify-start",
+                    active ? "shadow-glow" : "shadow-md"
                   )}
                 >
                   <item.icon className="w-5 h-5 flex-shrink-0" strokeWidth={2.5} />
-                  <span className="hidden lg:block text-sm font-semibold">
-                    {item.label}
-                  </span>
+                  <span className="hidden xl:block truncate">{item.label}</span>
                 </motion.div>
               </Link>
             );
@@ -58,37 +51,44 @@ export function SideNav() {
           return (
             <Link key={item.href} href={item.href}>
               <motion.div
-                whileHover={{ scale: 1.01 }}
-                whileTap={{ scale: 0.98 }}
+                whileHover={{ x: 2 }}
+                whileTap={{ scale: 0.97 }}
+                transition={{ type: "spring", stiffness: 400, damping: 30 }}
                 className={cn(
-                  "flex items-center gap-3 rounded-xl p-3 relative",
-                  "transition-all duration-200",
-                  "justify-center lg:justify-start",
-                  isActive
-                    ? "bg-primary/10 text-primary"
+                  "relative flex items-center gap-3 rounded-xl px-3 py-2.5",
+                  "text-sm transition-colors duration-150",
+                  "justify-center xl:justify-start",
+                  active
+                    ? "bg-primary/10 text-primary font-medium"
                     : "text-muted-foreground hover:bg-surface-hover hover:text-foreground"
                 )}
               >
-                <item.icon
-                  className="w-5 h-5 flex-shrink-0"
-                  strokeWidth={isActive ? 2.5 : 2}
-                />
-                <span className="hidden lg:block text-sm font-medium">
-                  {item.label}
-                </span>
-
+                {/* Active left border indicator */}
                 <AnimatePresence>
-                  {isActive && (
+                  {active && (
                     <motion.div
                       layoutId="side-nav-indicator"
-                      initial={{ opacity: 0, scaleY: 0 }}
-                      animate={{ opacity: 1, scaleY: 1 }}
-                      exit={{ opacity: 0, scaleY: 0 }}
+                      initial={{ scaleY: 0, opacity: 0 }}
+                      animate={{ scaleY: 1, opacity: 1 }}
+                      exit={{ scaleY: 0, opacity: 0 }}
                       transition={{ type: "spring", stiffness: 500, damping: 35 }}
-                      className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-5 rounded-full bg-primary"
+                      className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-r-full bg-primary"
                     />
                   )}
                 </AnimatePresence>
+
+                <motion.div
+                  animate={{ scale: active ? 1.1 : 1 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                  className="flex-shrink-0"
+                >
+                  <item.icon
+                    className="w-5 h-5"
+                    strokeWidth={active ? 2.5 : 1.8}
+                  />
+                </motion.div>
+
+                <span className="hidden xl:block truncate">{item.label}</span>
               </motion.div>
             </Link>
           );
