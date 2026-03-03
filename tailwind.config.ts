@@ -77,8 +77,9 @@ const config: Config = {
         "4xl": "2rem",
       },
       fontFamily: {
-        sans: ["var(--font-geist-sans)", "system-ui", "sans-serif"],
-        mono: ["var(--font-geist-mono)", "monospace"],
+          sans: ["Inter", "system-ui", "sans-serif"],
+          mono: ["ui-monospace", "monospace"],
+          },
       },
       boxShadow: {
         glass: "0 4px 24px -1px rgba(0,0,0,0.08), 0 2px 8px -1px rgba(0,0,0,0.04)",
