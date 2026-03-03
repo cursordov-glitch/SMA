@@ -22,7 +22,10 @@ export function formatRelativeTime(date: Date): string {
 }
 
 export function slugify(str: string): string {
-  return str.toLowerCase().replace(/\s+/g, "-").replace(/[^\w-]+/g, "");
+  return str
+    .toLowerCase()
+    .replace(/\s+/g, "-")
+    .replace(/[^\w-]+/g, "");
 }
 
 export function truncate(str: string, length: number): string {
